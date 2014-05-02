@@ -1,0 +1,61 @@
+								TODO LIST
+      parser
+[ ] parsed line struct with : command block struct array
+[x] command block struct with : input fileDescriptor, output fileDescriptor, command, argV, argC, redirectionFlag, delimiterFlag(pipe, bg, &&) 
+[ ] 					
+      error checking
+[ ] exit on consecutive delimiters (with or without whitespaces)
+[ ] exit if a pipe has no command after it
+[ ] exit if an argument contains whitespaces or qoutation marks  
+[ ] exit if a command block has more than a single output (exclusive) or input character
+[ ] exit if a command block ends with one of the following chars: < , > , >>
+[ ] exit if a command block ends with an output redirection
+
+
+      functions for initial error checking
+[ ] check if there exists a trailing pipe (with no commands after it)
+[ ] check if there are consecutive delimiters (with or without whitespaces) 
+[ ]  
+
+
+      executer
+[ ]  
+[ ]  
+[ ]  
+
+      redirection
+[ ] > 
+[ ] >> 
+[ ] < 
+
+      background
+[ ]  
+[ ]  
+[ ]  
+
+      delimiter &
+[ ]  
+[ ]  
+[ ]  
+
+      delimiter &&
+[ ]  
+[ ]  
+[ ]  
+
+      delimiter |
+[ ]  
+[ ]  
+[ ]  
+    
+      error log
+[ ] write(?) errors to stderr (perror)
+[ ] format error messages as: <command>: <error message>
+[ ] write to errors.log
+
+      signal handling
+[ ] reap zombies using SIGCHLD
+
+      exit commands
+[x] exit on "exit" command  
+[x] exit on end of stdin (i.e CTRL + D)

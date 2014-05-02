@@ -1,0 +1,34 @@
+# All shells have a number of built-in commands which are executed in the shell's own process. When you enter a command, the shell checks to see if it is a built-in command, and if so it executes it. If it is not a buit-in the shell forks a new process in which to execute the command.
+
+# A signal handler is just a function that you compile together with the rest of the program. Instead of directly invoking the function, you use signal or sigaction to tell the operating system to call it when a signal arrives. This is known as establishing the handler
+
+# Makefiles are a simple way to organize code compilation.
+
+# Reap zombie processes using the following tutorial
+http://www.microhowto.info/howto/reap_zombie_processes_using_a_sigchld_handler.html
+
+# piped processes run concurrently 
+Gilles @ http://unix.stackexchange.com/questions/37508/in-what-order-do-piped-commands-run
+Piped commands run concurrently. When you run ps | grep …, it's the luck of the draw (or a matter of details of the workings of the shell combined with scheduler fine-tuning deep in the bowels of the kernel) as to whether ps or grep starts first, and in any case they continue to execute concurrently.
+
+This is very commonly used to allow the second program to process data as it comes out from the first program, before the first program has completed its operation. For example
+
+grep pattern very-large-file | tr a-z A-Z
+begins to display the matching lines in uppercase even before grep has finished traversing the large file.
+
+grep pattern very-large-file | head -n 1
+displays the first matching line, and may stop processing well before grep has finished reading its input file.
+
+If you read somewhere that piped programs run in sequence, flee this document. Piped programs run concurrently and always have.
+
+# man 7 pipe | less
+If a process attempts to read from an empty pipe, then read(2) will block until data is available.
+
+# Atomic operations execute in a single step, without interruptions.
+http://wiki.osdev.org/Atomic_operation
+An atomic operation is an operation that will always be executed without any other process being able to read or change state that is read or changed during the operation. It is effectively executed as a single step, and is an important quality in a number of algorithms that deal with multiple indepent processes, both in synchronization and algorithms that update shared data without requiring synchronization.
+
+# David Rodríguez - dribeas @ http://stackoverflow.com/questions/976015/why-do-i-need-to-close-fds-when-reading-and-writing-to-the-pipe
+After performing the fork, all fds (file descriptors) are duplicated. Each process has both ends of the pipe open. If you only want to use one end you should close the other (if your process writes, close the read end).
+
+# 

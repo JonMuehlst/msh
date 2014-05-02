@@ -1,0 +1,46 @@
+basic structure:
+
+command -arg1 -arg2 etc...
+
+  * [ERR] an argument can't contain whitespaces or qoutation marks
+
+redirection:
+
+  * [ERR] a command block may have a single output or input character 
+
+> output redirection
+
+>> append output redirection
+
+< input redirection
+
+  * [ERR] an input line cannot end with the following chars: < , > , >>
+  * [ERR] a command block does output redirection and ends with a pipe
+
+for simplicity's sake:
+
+  * [ERR] a < file1.txt > file2.txt: make file1.txt the input of a. write the output of a to file2.txt
+
+  * [ERR] a > file1.txt < file2.txt: make file2.txt the input of a. write the output of a to file1.txt 
+
+| pipe
+
+  * [ERR] a pipe followed by no command
+
+a | b | c: the output of a is the input of b. the output of b is the input of c. a, b, c run concurrently. the pipe transfers the data in "real time"
+													   (i.e not sequentially from a to b to c).
+
+background:
+
+& run process in bg
+
+a && b: run b after a exited successfully
+
+a & b & c &: concurrently run a, b, c in the background. stream the output of a, b, c to the parent shell.
+
+delimiters:
+
+  | , & , && 
+  
+  * these delimiters seperate command blocks. i.e cmd1 -arg1 -arg2 (delimiter) cmd2 -arg1 -arg2 (delimiter) cmd3 -arg1 -arg2 etc..
+  * [ERR] consecutive delimiters are not allowed (with or without whitespaces)
