@@ -4,6 +4,8 @@
 #include <string.h>
 
 #include "constants.h"
+#include "parse.h"
+#include "errorcheck.h"
 
 /*	Functions
  * 
@@ -16,6 +18,8 @@ int main(int argc, char *argv[]){
   char line[1024];
   char lineBCKP[1024];
   while(1) {
+    check_all();
+    printf("\n");
     printf("$ ");
     if(!fgets(line, 1024, stdin)){
       printf("\n");

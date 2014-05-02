@@ -7,9 +7,10 @@
 [ ] exit on consecutive delimiters (with or without whitespaces)
 [ ] exit if a pipe has no command after it
 [ ] exit if an argument contains whitespaces or qoutation marks  
-[ ] exit if a command block has more than a single output (exclusive) or input character
+[ ] exit if a command block has more than a single redirection (output (exclusive) or input character)
 [ ] exit if a command block ends with one of the following chars: < , > , >>
-[ ] exit if a command block ends with an output redirection
+[ ] exit if a command block ends with  > , >> (including file name)
+[ ] exit if the command line ends with  > , >> (excluding file name)
 
 
       functions for initial error checking
@@ -59,3 +60,7 @@
       exit commands
 [x] exit on "exit" command  
 [x] exit on end of stdin (i.e CTRL + D)
+
+      unit tests
+[ ] main function
+[ ] error checker

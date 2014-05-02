@@ -9,6 +9,6 @@ typedef struct cmdBlock;
 //strategy_t my_strategy = IMMEDIATE;
 
 
-int foo(int x);  /* An example function declaration */
+//int foo(int x);  /* An example function declaration */
 
 #endif 
