@@ -4,13 +4,15 @@
 [x] command block struct with : input fileDescriptor, output fileDescriptor, command, argV, argC, redirectionFlag, delimiterFlag(pipe, bg, &&) 
 [ ] 					
       error checking
-[ ] exit on consecutive delimiters (with or without whitespaces)
-[ ] exit if a pipe has no command after it
-[ ] exit if an argument contains whitespaces or qoutation marks  
-[ ] exit if a command block has more than a single redirection (output (exclusive) or input character)
-[ ] exit if a command block ends with one of the following chars: < , > , >>
-[ ] exit if a command block ends with  > , >> (including file name)
-[ ] exit if the command line ends with  > , >> (excluding file name)
+[x] exit on consecutive delimiters (with or without whitespaces)
+[x] exit if a pipe has no command after it
+[ ] exit if a pipe has no command before it
+[ ] exit if an argument contains delimiters, redir etc and letters e.g >>file.txt (without whitespaces)
+[x] exit if an argument contains whitespaces or qoutation marks  
+[x] exit if a command block has more than a single redirection (output (exclusive) or input character)
+[x] exit if a command block ends with one of the following chars: < , > , >>
+[x] exit if a command block ends with  > , >> (including file name)
+[x] exit if the command line ends with  <, > , >> (excluding file name)
 
 
       functions for initial error checking

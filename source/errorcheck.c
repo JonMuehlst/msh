@@ -130,7 +130,7 @@
     char* srcPtr;
     
     srcPtr = line;
-    skipBlanks(srcPtr);
+    skipBlanks(&srcPtr);
     while(*srcPtr){ // assuming white spaces are always skipped
       
       printf(" %c", *srcPtr); // for debugging
@@ -172,7 +172,8 @@
 	  outputRedirFlag = 1;
 	  srcPtr += 2;
 	  if(*srcPtr == ' '){
-	    skipBlanks(srcPtr);
+	    skipBlanks(&srcPtr);
+	    break;
 	  }
 	}
       } 
@@ -193,7 +194,7 @@
       
       ++srcPtr;
       if(*srcPtr == ' '){
-	skipBlanks(srcPtr);
+	skipBlanks(&srcPtr);
       }
     }
     
@@ -210,11 +211,11 @@
  }
 
 
-void skipBlanks(char *srcPtr)
+void skipBlanks(char **srcPtr)
 {
-	while(*srcPtr == ' ' && *srcPtr == '\t' && *srcPtr == '\n' && *srcPtr)
+	while((**srcPtr == ' ' || **srcPtr == '\t' || **srcPtr == '\n') && **srcPtr)
 	{
-		srcPtr++;
+		(*srcPtr)++;
 	}
 	
 }

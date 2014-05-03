@@ -15,7 +15,7 @@
     void check_all();
 
     int chck_general_error(char *line);
-    void skipBlanks(char *srcPtr);
+    void skipBlanks(char **srcPtr);
 
 
 
