@@ -14,24 +14,13 @@
 [x] exit if the command line ends with  < , > , >> (excluding file name)
 
       run
-[ ]  
-[ ]  
-[ ]  
+[x]  run pipe seperated commands
+[ ]  run pipe seperated commands with redirection
+[ ]  run & seperated commands
+[ ]  run & seperated commands with redirection
 
       redirection
-[ ] > 
-[ ] >> 
-[ ] < 
-
-      delimiter &
-[ ]  
-[ ]  
-[ ]   
-
-      delimiter |
-[ ]  
-[ ]  
-[ ]  
+[x] identify redirection in block and extract filename 
     
       error log
 [ ] write(?) errors to stderr (perror)

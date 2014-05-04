@@ -16,8 +16,7 @@ void printArgs(char *args[], size_t n){
    for (; i < n; ++i)
    {
       printf("%s\n",args[i]);
-   }
-  
+   } 
 }
 
 void check_parse()
