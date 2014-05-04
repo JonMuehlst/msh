@@ -13,7 +13,7 @@
 [x] exit if a command block ends with  > , >> (including file name)
 [x] exit if the command line ends with  < , > , >> (excluding file name)
 
-      executer
+      run
 [ ]  
 [ ]  
 [ ]  
@@ -22,11 +22,6 @@
 [ ] > 
 [ ] >> 
 [ ] < 
-
-      background
-[ ]  
-[ ]  
-[ ]  
 
       delimiter &
 [ ]  
@@ -53,3 +48,6 @@
       unit tests
 [/] errorchecker.c
 [x] parse.c
+      
+      makefile
+[x] create basic makefile

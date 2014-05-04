@@ -23,10 +23,10 @@ void printArgs(char *args[], size_t n){
 void check_parse()
 {
    static char* args[512];
-   char cmd[] = "     ls | test & | ls\n";
+   char cmd[] = "     ls | test >> ls.txt & ls\n";
    
    split(cmd, args);
-   printArgs(args, 6);
+   printArgs(args, 7);
 }
 /* 
  *   / >
