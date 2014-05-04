@@ -12,7 +12,7 @@
     int check_more_than_one_redir_in_block();
     int check_qoutation_mark();
     int check_pipe_last();
-    void check_all();
+    void check_all_errorcheck();
 
     int chck_general_error(char *line);
     void skipBlanks(char **srcPtr);

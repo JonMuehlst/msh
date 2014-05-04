@@ -1,8 +1,7 @@
 								TODO LIST
       parser
-[ ] parsed line struct with : command block struct array
-[x] command block struct with : input fileDescriptor, output fileDescriptor, command, argV, argC, redirectionFlag, delimiterFlag(pipe, bg, &&) 
-[ ] 					
+[x] parse block by white space and assign strings to args[] 					
+
       error checking
 [x] exit on consecutive delimiters (with or without whitespaces)
 [x] exit if a pipe has no command after it
@@ -12,14 +11,7 @@
 [x] exit if a command block has more than a single redirection (output (exclusive) or input character)
 [x] exit if a command block ends with one of the following chars: < , > , >>
 [x] exit if a command block ends with  > , >> (including file name)
-[x] exit if the command line ends with  <, > , >> (excluding file name)
-
-
-      functions for initial error checking
-[ ] check if there exists a trailing pipe (with no commands after it)
-[ ] check if there are consecutive delimiters (with or without whitespaces) 
-[ ]  
-
+[x] exit if the command line ends with  < , > , >> (excluding file name)
 
       executer
 [ ]  
@@ -39,12 +31,7 @@
       delimiter &
 [ ]  
 [ ]  
-[ ]  
-
-      delimiter &&
-[ ]  
-[ ]  
-[ ]  
+[ ]   
 
       delimiter |
 [ ]  
@@ -64,5 +51,5 @@
 [x] exit on end of stdin (i.e CTRL + D)
 
       unit tests
-[ ] main function
-[ ] error checker
+[/] errorchecker.c
+[x] parse.c

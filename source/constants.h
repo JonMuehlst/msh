@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H_   /* Include guard */
 #define CONSTANTS_H_
 
-#define EXITN "exit\n"
+#define EXIT "exit"
 
 #define PIPE "|"
 #define AMPERSAND "&"

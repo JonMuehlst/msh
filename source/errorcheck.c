@@ -72,7 +72,7 @@
       return 0;
     }
     
-    void check_all(){
+    void check_all_errorcheck(){
       int flag = 1;
       if(!check_pipe_last()){
 	printf("pipe_last_check_incorrect\n");

@@ -18,14 +18,19 @@ int main(int argc, char *argv[]){
   char line[1024];
   char lineBCKP[1024];
   while(1) {
-    check_all();
+    check_all_errorcheck();
+    printf("\n");
+    check_parse();
     printf("\n");
     printf("$ ");
     if(!fgets(line, 1024, stdin)){
       printf("\n");
       break;
     }
-    if(strcmp(EXITN,line) == 0){
+      /* Remove the trailing newline 
+    line[strlen(line) - 1] = '\0'; */
+    
+    if(strcmp(EXIT,line) == 0){
       break;
     }
     memcpy ( lineBCKP, line, strlen(line)+1 );
