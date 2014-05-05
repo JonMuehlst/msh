@@ -16,7 +16,8 @@
       run
 [x]  run pipe seperated commands
 [ ]  run pipe seperated commands with redirection
-[ ]  run & seperated commands
+[ ]  run mixed commands (e.g kate & ls | grep l)
+[x]  run & seperated commands
 [ ]  run & seperated commands with redirection
 
       redirection

@@ -24,11 +24,19 @@ static void cleanup(int n)
  
 int main(int argc, char *argv[]){
   
-  char line[1024]; // = "ls \n";
+  char line[1024] = "kate & ls | grep l"; // = "ls \n";
   char lineBCKP[1024];
   int n = 0; /* number of calls to 'command' */
-  //int i = 0;
+  int i = 0;
   pid_t pid = 0;
+  
+  printf("Press t to test or any other key to continue...\n");
+  printf("$ ");
+    
+    if(!fgets(line, 1024, stdin)){
+      printf("\n");
+      exit(0);
+    }
   
   while(1) {
     //check_all_errorcheck();
@@ -36,13 +44,17 @@ int main(int argc, char *argv[]){
     //check_parse();
     //check_run();
     //printf("\n");
-    printf("$ ");
-    
-    if(!fgets(line, 1024, stdin)){
-      printf("\n");
-      break;
-    } 
-    
+    if(line[0] != 't'){
+      printf("$ ");
+      
+      if(!fgets(line, 1024, stdin)){
+	printf("\n");
+	break;
+      } 
+    } else {
+       strcpy(line ,"kate & ls | grep l\n");
+      }
+    //fflush(stdin);
     /* Remove the trailing newline 
     line[strlen(line) - 1] = '\0'; */
     
@@ -81,11 +93,10 @@ int main(int argc, char *argv[]){
 	    first = 0;
     }
     if(!trailingAmp)
-      input = run(cmd, input, first, 1, &n);
-    cleanup(n);
+      input = run(cmd, input, first, 1, &n, NO_BLOCK_ENDING);
+    //cleanup(n);
     n = 0;
-    
-      
+     
   }
   
 } 

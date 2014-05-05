@@ -52,10 +52,16 @@ int pipeCommand(int input, int first, int last){
 			// First command
 			dup2( pipettes[PIPE_WRITE], STDOUT_FILENO );
 		} else if (first == 0 && last == 0 && input != 0) {
-			// Middle command
+			// Middle command with input redirection
 			dup2(input, STDIN_FILENO);
 			dup2(pipettes[PIPE_WRITE], STDOUT_FILENO);
-		} else {
+		} else if (first == 0 && last == 0 && input == 0) {
+			// Middle command without input redirection
+			//dup2(input, STDIN_FILENO);
+			dup2(pipettes[PIPE_WRITE], STDOUT_FILENO);
+		} 
+		
+		else {
 			// Last command
 			dup2( input, STDIN_FILENO );
 		}
@@ -77,41 +83,57 @@ int pipeCommand(int input, int first, int last){
 	return pipettes[PIPE_READ];
 }
  
-/*
-int bgCommand(int input, int first, int last){
+
+int bgCommand(int input, int first){
 	
+	int status = 0;
 	pid = fork();
  
 	if (pid == 0) {
-		if (first == 1 && last == 0 && input == 0) {
+		if (first == 1 && input == 0) {
 			// First command
-			//dup2( pipettes[PIPE_WRITE], STDOUT_FILENO );
-		} else if (first == 0 && last == 0 && input != 0) {
-			// Middle command
+		} else if (first == 0 && input != 0) {
+			// Middle or last command
 			dup2(input, STDIN_FILENO);
-			dup2(pipettes[PIPE_WRITE], STDOUT_FILENO);
-		} else {
-			// Last command
-			dup2( input, STDIN_FILENO );
-		}
+		} //if first == 0 && input ==0 then don't redirect...
  
 		if (execvp( args[0], args) == -1)
 			_exit(EXIT_FAILURE); // If child fails
+	} else {
+	  waitpid(pid, &status, WNOHANG );
 	}
- 
+	
 	if (input != 0) 
 		close(input);
  
-	// Nothing more needs to be written
-	close(pipettes[PIPE_WRITE]);
- 
-	// If it's the last command, nothing more needs to be read
-	if (last == 1)
-		close(pipettes[PIPE_READ]);
-	
 	return STANDARD_INPUT;
 }
-*/
+
+int command(int input, int first){
+	
+	int status = 0;
+	pid = fork();
+ 
+	if (pid == 0) {
+		if (first == 1 && input == 0) {
+			// only command
+		} else if (first == 0 && input != 0) {
+			// last command
+			dup2(input, STDIN_FILENO);
+		} 
+ 
+		if (execvp( args[0], args) == -1)
+			_exit(EXIT_FAILURE); // If child fails
+	} else {
+	  waitpid(pid, &status, 0 );
+	}
+	
+	if (input != 0) 
+		close(input);
+ 
+	return STANDARD_INPUT;
+}
+
 
 int run(char* cmd, int input, int first, int last, int* n, int delimitFlag){
 	split(cmd, args);
@@ -119,11 +141,13 @@ int run(char* cmd, int input, int first, int last, int* n, int delimitFlag){
 		if (strcmp(args[0], EXIT) == 0) 
 			exit(0); */
 		(*n) += 1;
-		if(delimitFlag == AMPERSAND_NUM){ 
-		  //return bgCommand(input, first, last);
-		  
+		if(delimitFlag == AMPERSAND_NUM){
+		  return bgCommand(input, first);
+		} else if(delimitFlag == PIPE_NUM){
+		    return pipeCommand(input, first, last);
+		} else if(delimitFlag == NO_BLOCK_ENDING){
+		    return command(input, first);
 		}
-		return pipeCommand(input, first, last);
 	}
 	return 0;
 }
