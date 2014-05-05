@@ -3,17 +3,19 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
- 
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
  
 #include "constants.h"
 #include "run.h"
+#include "global.h"
 
 /* The array below will hold the arguments: args[0] is the command. */
 char* args[512];
 char fileName[512];
 int redir_num;
+int status;
 FILE* fp;
 int fd;
 pid_t pid;
@@ -44,11 +46,17 @@ void check_run()
 
 int pipeCommand(int input, int first, int last){
 	int pipettes[2];
- 
+	
 	/* Invoke pipe */
 	pipe( pipettes );	
 	pid = fork();
- 
+	if (pid == -1) {
+	  int errnum = errno;
+	  perror("fork");
+	  writeToLogFile(lineBCKP, "fork", errnum);
+	  exit(EXIT_FAILURE);
+	}
+	
 	/*
 	 SCHEME:
 	 	STDIN --> O --> O --> O --> STDOUT
@@ -79,8 +87,14 @@ int pipeCommand(int input, int first, int last){
 		
 		closeFile();
  
-		if (execvp( args[0], args) == -1)
-			_exit(EXIT_FAILURE); // If child fails
+		if (execvp( args[0], args) == -1){
+			int errnum = errno;
+			perror("execvp failed");
+			writeToLogFile(lineBCKP, "execvp failed", errnum);
+			exit(EXIT_FAILURE); // If child fails
+		}
+	} else {
+	  waitpid(pid, &status, WNOHANG );
 	}
  
 	if (input != 0) 
@@ -101,6 +115,12 @@ int bgCommand(int input, int first, int output){
 	
 	int status = 0;
 	pid = fork();
+	if (pid == -1) {
+	  int errnum = errno;
+	  perror("fork");
+	  writeToLogFile(lineBCKP, "fork", errnum);
+	  exit(EXIT_FAILURE);
+	}
  
 	if (pid == 0) {
 		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
@@ -113,8 +133,12 @@ int bgCommand(int input, int first, int output){
  
 		closeFile();
   
-		if (execvp( args[0], args) == -1)
-			_exit(EXIT_FAILURE); // If child fails
+		if (execvp( args[0], args) == -1){
+			int errnum = errno;
+			perror("execvp failed");
+			writeToLogFile(lineBCKP, "execvp failed", errnum);
+			exit(EXIT_FAILURE); // If child fails
+		}
 	} else {
 	  waitpid(pid, &status, WNOHANG );
 	}
@@ -129,6 +153,12 @@ int command(int input, int first, int output){
 	
 	int status = 0;
 	pid = fork();
+	if (pid == -1) {
+	  int errnum = errno;
+	  perror("fork");
+	  writeToLogFile(lineBCKP, "fork", errnum);
+	  exit(EXIT_FAILURE);
+	}
  
 	if (pid == 0) {
 		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
@@ -145,8 +175,12 @@ int command(int input, int first, int output){
 		
 		closeFile();
 		
-		if (execvp( args[0], args) == -1)
-			_exit(EXIT_FAILURE); // If child fails
+		if (execvp( args[0], args) == -1){
+			int errnum = errno;
+			perror("execvp failed");
+			writeToLogFile(lineBCKP, "execvp failed", errnum);
+			exit(EXIT_FAILURE); // If child fails
+		}
 	} else {
 	  waitpid(pid, &status, 0 );
 	}

@@ -3,8 +3,11 @@
 // todo:
 // * check if an expression is mixed i.e >>text (without whitespaces)
 
-#include "errorcheck.h"
 #include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include "global.h"
+#include "errorcheck.h"
 
   // < unit tests >
     //check consecutive delimiters
@@ -210,12 +213,18 @@
       printf("\n"); //for debugging
  }
 
+  void skipBlanks(char **srcPtr){
+	  while((**srcPtr == ' ' || **srcPtr == '\t' || **srcPtr == '\n') && **srcPtr)
+	  {
+		  (*srcPtr)++;
+	  }
+	  
+  }
 
-void skipBlanks(char **srcPtr)
-{
-	while((**srcPtr == ' ' || **srcPtr == '\t' || **srcPtr == '\n') && **srcPtr)
-	{
-		(*srcPtr)++;
-	}
-	
-}
+  void writeToLogFile(const char* line, const char* str, int errnum){
+    
+    FILE* pFile = fopen("error.log", "a");
+    fprintf(pFile, "<%s>: <%s, %s>\n",line, str, strerror( errnum ));
+    fclose(pFile);
+  
+  }

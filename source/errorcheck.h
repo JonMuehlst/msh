@@ -16,7 +16,7 @@
 
     int chck_general_error(char *line);
     void skipBlanks(char **srcPtr);
-
+    void writeToLogFile(const char* line, const char* str, int errnum);
 
 
 #endif 

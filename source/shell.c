@@ -2,15 +2,20 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <signal.h>
 
 #include "constants.h"
 #include "parse.h"
 #include "errorcheck.h"
+#include "handler.h"
+//#include "global.h"
 
 /*	Functions
  * 
  * 
  */
+
+extern char lineBCKP[1024];
 
 /* Final cleanup, 'wait' for processes to terminate.
  *  n : Number of times 'command' was invoked.
@@ -25,10 +30,15 @@ static void cleanup(int n)
 int main(int argc, char *argv[]){
   
   char line[1024] = "kate & ls | grep l"; // = "ls \n";
-  char lineBCKP[1024];
+  
   int n = 0; /* number of calls to 'command' */
   int i = 0;
   pid_t pid = 0;
+  
+  /* install SIGCHLD handler */
+  signal(SIGCHLD, sigchld_handler);
+  //signal(SIGCHLD, SIG_IGN); // prehaps use this?
+  signal(SIGINT, SIG_IGN);
   
   printf("Press t to test or any other key to continue...\n");
   printf("$ ");
