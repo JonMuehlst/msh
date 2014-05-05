@@ -8,9 +8,14 @@
 #include <sys/wait.h>
  
 #include "constants.h"
+#include "run.h"
 
 /* The array below will hold the arguments: args[0] is the command. */
 char* args[512];
+char fileName[512];
+int redir_num;
+FILE* fp;
+int fd;
 pid_t pid;
 /* 
  *  < unit tests
@@ -24,11 +29,13 @@ void print_run_check(char* fileName, int redir_num){
 
 void check_run()
 {
-   char* fileName = (char*)malloc(sizeof(char)*50);
+   //fileName = (char*)malloc(sizeof(char)*50);
+   char* bckpPointer = fileName;
    char cmd[] = "     test >> ls.txt\n";
    int redir_num = 0;
-   redir_num = getRedir(cmd, fileName);
+   getRedir(cmd);
    print_run_check(fileName, redir_num);
+   //free(fileName);
 }
 /* 
  *   / >
@@ -51,6 +58,10 @@ int pipeCommand(int input, int first, int last){
 		if (first == 1 && last == 0 && input == 0) {
 			// First command
 			dup2( pipettes[PIPE_WRITE], STDOUT_FILENO );
+		} else if (first == 1 && last == 0 && input != 0) {
+			// First command
+			dup2(input, STDIN_FILENO);
+			dup2( pipettes[PIPE_WRITE], STDOUT_FILENO );
 		} else if (first == 0 && last == 0 && input != 0) {
 			// Middle command with input redirection
 			dup2(input, STDIN_FILENO);
@@ -65,6 +76,8 @@ int pipeCommand(int input, int first, int last){
 			// Last command
 			dup2( input, STDIN_FILENO );
 		}
+		
+		closeFile();
  
 		if (execvp( args[0], args) == -1)
 			_exit(EXIT_FAILURE); // If child fails
@@ -84,19 +97,22 @@ int pipeCommand(int input, int first, int last){
 }
  
 
-int bgCommand(int input, int first){
+int bgCommand(int input, int first, int output){
 	
 	int status = 0;
 	pid = fork();
  
 	if (pid == 0) {
-		if (first == 1 && input == 0) {
-			// First command
-		} else if (first == 0 && input != 0) {
-			// Middle or last command
+		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
+			// First command with standard IO
+		} else if (input != 0 && output == STANDARD_OUTPUT) {
 			dup2(input, STDIN_FILENO);
-		} //if first == 0 && input ==0 then don't redirect...
+		} else if (input == 0 && output != STANDARD_OUTPUT) {
+			dup2(output, STDOUT_FILENO);
+		} //if first == 0 && input == 0 && output == 0 then don't redirect...
  
+		closeFile();
+  
 		if (execvp( args[0], args) == -1)
 			_exit(EXIT_FAILURE); // If child fails
 	} else {
@@ -109,19 +125,23 @@ int bgCommand(int input, int first){
 	return STANDARD_INPUT;
 }
 
-int command(int input, int first){
+int command(int input, int first, int output){
 	
 	int status = 0;
 	pid = fork();
  
 	if (pid == 0) {
-		if (first == 1 && input == 0) {
+		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
 			// only command
-		} else if (first == 0 && input != 0) {
+		} else if (input != 0) {
 			// last command
 			dup2(input, STDIN_FILENO);
-		} 
- 
+		} else if (output != STANDARD_OUTPUT){
+			dup2(output, STDOUT_FILENO);
+		}
+		
+		closeFile();
+		
 		if (execvp( args[0], args) == -1)
 			_exit(EXIT_FAILURE); // If child fails
 	} else {
@@ -134,24 +154,6 @@ int command(int input, int first){
 	return STANDARD_INPUT;
 }
 
-
-int run(char* cmd, int input, int first, int last, int* n, int delimitFlag){
-	split(cmd, args);
-	if (args[0] != NULL) { /*
-		if (strcmp(args[0], EXIT) == 0) 
-			exit(0); */
-		(*n) += 1;
-		if(delimitFlag == AMPERSAND_NUM){
-		  return bgCommand(input, first);
-		} else if(delimitFlag == PIPE_NUM){
-		    return pipeCommand(input, first, last);
-		} else if(delimitFlag == NO_BLOCK_ENDING){
-		    return command(input, first);
-		}
-	}
-	return 0;
-}
-
 /*
  * OUTPUT_REDIRECTION_NUM 
  * APPEND_OUTPUT_REDIRECTION_NUM 
@@ -159,15 +161,64 @@ int run(char* cmd, int input, int first, int last, int* n, int delimitFlag){
  * NO_IO_REDIRECTION_NUM
  */
 
-int getRedir(char* cmd_org, char* fileName){
+int run(char* cmd, int input, int first, int last, int* n, int delimitFlag){
+	
+	int output = STANDARD_OUTPUT;
+	
+	getRedir(cmd); //redir_num and fileName get assigned here.
+	
+	if(redir_num == OUTPUT_REDIRECTION_NUM || redir_num == APPEND_OUTPUT_REDIRECTION_NUM){
+	  openFile();
+	  output = fd;
+	} else if(redir_num == INPUT_REDIRECTION_NUM){
+	  openFile();
+	  input = fd;
+	}
+	
+	split(cmd, args);
+	
+	if (args[0] != NULL) { /*
+		if (strcmp(args[0], EXIT) == 0) 
+			exit(0); */
+		(*n) += 1;
+		if(delimitFlag == AMPERSAND_NUM){
+		  return bgCommand(input, first, output);
+		} else if(delimitFlag == PIPE_NUM){
+		    return pipeCommand(input, first, last);
+		} else if(delimitFlag == NO_BLOCK_ENDING){
+		    return command(input, first, output);
+		}
+	}
+	return 0;
+}
+
+void openFile(){
+  if(redir_num == OUTPUT_REDIRECTION_NUM){
+    fp = fopen(fileName, "w");
+    fd = fileno(fp);  
+  } else if(redir_num == APPEND_OUTPUT_REDIRECTION_NUM){
+    fp = fopen(fileName, "a");
+    fd = fileno(fp);
+  } else if(redir_num == INPUT_REDIRECTION_NUM){
+    fp = fopen(fileName, "r");
+    fd = fileno(fp);
+  } 
+}
+
+void closeFile(){
+  if(redir_num != NO_IO_REDIRECTION_NUM)
+    fclose(fp);
+}
+
+void getRedir(char* cmd){
   char redirStr[] = "><";
-  char* cmd = (char*)malloc(sizeof(char)*50);
-  char* backupPointer = cmd;
-  strcpy ( cmd, cmd_org );
   char* next = strpbrk(cmd,redirStr);
-  int redir_num = 0;
+  char* bP = cmd;
+  redir_num = 0;
   
-  if(*next == '<'){
+  if( next == NULL ) {
+    redir_num = NO_IO_REDIRECTION_NUM;
+  } else if(*next == '<'){
     redir_num = INPUT_REDIRECTION_NUM;
     *next = '\0';
     *(next + 1)= '\0';
@@ -185,17 +236,15 @@ int getRedir(char* cmd_org, char* fileName){
       *(next + 1)= '\0';
       cmd = next + 2;
     }
-  } else {
-    redir_num = NO_IO_REDIRECTION_NUM;
-  }
+  } 
   
   if(redir_num != NO_IO_REDIRECTION_NUM){
     next = strpbrk(cmd," \n");
     *next = '\0';
     strcpy(fileName, cmd);
+    cmd = bP;
   }
-  free(backupPointer);
-  return redir_num;
+  //return redir_num;
 }
 
 

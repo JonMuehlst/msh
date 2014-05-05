@@ -16,13 +16,14 @@
       run
 [x]  run pipe seperated commands
 [ ]  run pipe seperated commands with redirection
-[ ]  run mixed commands (e.g kate & ls | grep l)
+[x]  run mixed commands (e.g kate & ls | grep l)
 [x]  run & seperated commands
 [ ]  run & seperated commands with redirection
 
       redirection
 [x] identify redirection in block and extract filename 
-    
+[x] read and write from file    
+
       error log
 [ ] write(?) errors to stderr (perror)
 [ ] format error messages as: <command>: <error message>

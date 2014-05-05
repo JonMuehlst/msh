@@ -39,11 +39,7 @@ int main(int argc, char *argv[]){
     }
   
   while(1) {
-    //check_all_errorcheck();
-    //printf("\n");
-    //check_parse();
-    //check_run();
-    //printf("\n");
+    
     if(line[0] != 't'){
       printf("$ ");
       
@@ -52,7 +48,13 @@ int main(int argc, char *argv[]){
 	break;
       } 
     } else {
-       strcpy(line ,"kate & ls | grep l\n");
+      //strcpy(line ,"kate & ls | grep l\n"); //check mixed commands
+      //check_all_errorcheck();
+      //printf("\n");
+      check_parse();
+      //check_run();
+      //printf("\n");
+      break;
       }
     //fflush(stdin);
     /* Remove the trailing newline 
