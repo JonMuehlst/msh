@@ -15,10 +15,11 @@
 
       run
 [x]  run pipe seperated commands
-[ ]  run pipe seperated commands with redirection
+[x]  run pipe seperated commands with redirection
 [x]  run mixed commands (e.g kate & ls | grep l)
+[x]  run mixed commands (i.e IO REDIR + PIPE + BG)
 [x]  run & seperated commands
-[ ]  run & seperated commands with redirection
+[x]  run & seperated commands with redirection
 
       redirection
 [x] identify redirection in block and extract filename 

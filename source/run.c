@@ -133,10 +133,13 @@ int command(int input, int first, int output){
 	if (pid == 0) {
 		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
 			// only command
-		} else if (input != 0) {
+		} else if (input != 0 && output == STANDARD_OUTPUT) {
 			// last command
 			dup2(input, STDIN_FILENO);
-		} else if (output != STANDARD_OUTPUT){
+		} else if (input == 0 && output != STANDARD_OUTPUT){
+			dup2(output, STDOUT_FILENO);
+		} else if (input != 0 && output != STANDARD_OUTPUT){
+			dup2(input, STDIN_FILENO);
 			dup2(output, STDOUT_FILENO);
 		}
 		
