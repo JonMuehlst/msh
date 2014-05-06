@@ -26,12 +26,19 @@
 [x] read and write from file    
 
       error log
-[ ] write(?) errors to stderr (perror)
-[ ] format error messages as: <command>: <error message>
-[ ] write to errors.log
+[x] write errors to stderr using perror
+[x] format error messages as: <command>: <error message>
+[x] write to errors.log
+[ ] catch all system call return values and check for errors
+[ ] catch error for waitpid
+[ ] catch error for fopen(filename, "r");
+[x] catch error for execvp
+[x] catch error for fork
 
       signal handling
-[ ] reap zombies using SIGCHLD
+[x] reap zombies using SIGCHLD
+[ ] do something with exited child's status
+[x] ignore CTRL - C
 
       exit commands
 [x] exit on "exit" command  
