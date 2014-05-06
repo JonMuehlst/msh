@@ -130,73 +130,107 @@
     int delimiter = 0;		/* Specify whether a delimiter was found*/
     int redirFlag = 0;		/* Specifies empty redirection */
     int isTextFlag = 0;
+    int isSymbolFlag = 0;
+    int emptyBlock = 1;
     char* srcPtr;
     
     srcPtr = line;
     skipBlanks(&srcPtr);
     while(*srcPtr){ // assuming white spaces are always skipped
       
-      printf(" %c", *srcPtr); // for debugging
-      
-      if(*srcPtr == '|' || *srcPtr == '&'){
-	if(delimiter)
-	    return -1;
-	if(*srcPtr == '|' ){ //output redirection before a pipe is not allowed.
-	  if(outputRedirFlag)
-	    return -1;
+      if(*srcPtr != '&' && *srcPtr != '|' && *srcPtr != '>' && *srcPtr != '<'){
+	if(*srcPtr == '\n' || *srcPtr == ' ' || *srcPtr == '\t'){
+	  isTextFlag = 0;
+	} else {
+	  delimiter = 0;
+	  redirFlag = 0;
+	  pipeFlag = 0;
+	  emptyBlock = 0;
+	  isTextFlag = 1;
 	}
-	if(redirFlag) // // empty redirection before delimiter
-	    return -1;
-	delimiter = 1;
-	//no error in the last block. reinitialize flags.
-	outputRedirFlag = 0; // should not be necessary. 
-	redirFlag = 0;
-	inputRedirFlag = 0;
       } else {
-	delimiter = 0;
-      }
-      
-      if(*srcPtr == '|'){
-	pipeFlag = 1;
-      } else {
-	pipeFlag = 0;
-      }
-      
-      if(*srcPtr == '\"'){// should not contain qoutation marks
-	return -1;
-      }
-      
-      if(*(srcPtr + 1)){
-	if(*srcPtr == '>' && *(srcPtr + 1) == '>'){
-	  if(redirFlag){
+	//printf(" %c", *srcPtr); // for debugging
+	
+	if(isTextFlag){ //mixed text and symbols
+	  return -1;
+	}
+	
+	if(*srcPtr == '|' || *srcPtr == '&'){
+	  
+	  if(delimiter)
+	      return -1;
+	  
+	  if(*srcPtr == '|' ){ //output redirection before a pipe is not allowed.
+	    if(outputRedirFlag)
+	      return -1;
+	  }
+	  
+	  if(redirFlag) // // empty redirection before delimiter
+	      return -1;
+	  
+	  if(emptyBlock){ // no commands before '|' or '&'
 	    return -1;
+	  }
+	  
+	  delimiter = 1;
+	  
+	  //no error in the last block. reinitialize flags.
+	  outputRedirFlag = 0; // should not be necessary. 
+	  redirFlag = 0;
+	  inputRedirFlag = 0;
+	  emptyBlock = 1;
+	
+	} else if(*srcPtr == '\n'){
+	  //skip
+	} else {
+	  delimiter = 0;
+	  emptyBlock = 0;
+	}
+	
+	if(*srcPtr == '|'){
+	  pipeFlag = 1;
+	} else {
+	  pipeFlag = 0;
+	}
+	
+	if(*srcPtr == '\"'){// should not contain qoutation marks
+	  return -1;
+	}
+	
+	if(*(srcPtr + 1)){
+	  if(*srcPtr == '>' && *(srcPtr + 1) == '>'){
+	    if(redirFlag){
+	      return -1;
+	    }
+	    redirFlag = 1;
+	    outputRedirFlag = 1;
+	    srcPtr += 2;
+	    if(*srcPtr == ' '){
+	      skipBlanks(&srcPtr);
+	      break;
+	    }
+	  }
+	} 
+	
+	if(*srcPtr == '>' || *srcPtr == '<'){
+	  if(outputRedirFlag || inputRedirFlag){
+	      return -1;
+	  }
+	  if(*srcPtr == '>'){
+	    outputRedirFlag = 1;
+	  } else {
+	    inputRedirFlag = 1;
 	  }
 	  redirFlag = 1;
-	  outputRedirFlag = 1;
-	  srcPtr += 2;
-	  if(*srcPtr == ' '){
-	    skipBlanks(&srcPtr);
-	    break;
-	  }
-	}
-      } 
-      
-      if(*srcPtr == '>' || *srcPtr == '<'){
-	if(outputRedirFlag || inputRedirFlag){
-	    return -1;
-	}
-	if(*srcPtr == '>'){
-	  outputRedirFlag = 1;
+	} else if(*srcPtr == '\n'){
+	  //skip
 	} else {
-	  inputRedirFlag = 1;
-	}
-	redirFlag = 1;
-      } else {
-	redirFlag = 0;
-      } 
-      
+	  redirFlag = 0;
+	} 
+      }
       ++srcPtr;
       if(*srcPtr == ' '){
+	isTextFlag = 0;
 	skipBlanks(&srcPtr);
       }
     }
@@ -209,8 +243,13 @@
     if(redirFlag){
       return -1;
     }
+    
+    if(emptyBlock){ 
+      return -1;
+    }
   
-      printf("\n"); //for debugging
+      //printf("\n"); //for debugging
+      return 0;
  }
 
   void skipBlanks(char **srcPtr){

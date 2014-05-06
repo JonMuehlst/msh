@@ -15,6 +15,12 @@ void sigchld_handler (int sig) {
     pid_t child;
     while ((child = waitpid(-1, &status, WNOHANG)) > 0) {
         /*...do something with exited child's status */
+	 if(child == -1){
+	    int errnum = errno;
+	    perror("Child process terminated with errors");
+	    writeToLogFile(lineBCKP, "Child process terminated with errors", errnum);
+	    exit(EXIT_FAILURE);
+	  }
     }
 }
 

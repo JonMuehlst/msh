@@ -1,8 +1,0 @@
-total 84
--rw-r--r-- 1 root root   706 מאי  5 17:19 ls2.txt
--rw-r--r-- 1 root root   863 מאי  5 17:19 ls3.txt
--rw-r--r-- 1 root root     0 מאי  5 17:26 ls4.txt
--rw-r--r-- 1 root root   653 מאי  5 17:08 ls.txt
--rw-r--r-- 1 root root   112 מאי  5 00:15 makefile
--rwxr-xr-x 1 root root 27886 מאי  5 17:25 shell
--rwxr-xr-x 1 root root  2151 מאי  5 13:57 shell.c

@@ -1,2 +1,36 @@
 <[A>: <execvp failed, No such file or directory>
 <lsa>: <execvp failed, No such file or directory>
+<lsa>: <execvp failed, No such file or directory>
+<kate>: <Child process terminated with errors, No child processes>
+<kate>: <Child process terminated with errors, No child processes>
+<grep c < ls.t>: <ls.t, No such file or directory>
+<file < f > f>: <invalid input, Input/output error>
+<test < f > f>: <invalid input, Input/output error>
+<test < f > f>: <invalid input, Input/output error>
+<grep c < ls.t > f>: <invalid input, Input/output error>
+<grec < ls.t > f>: <invalid input, Input/output error>
+<| ls>: <invalid input, Input/output error>
+<ls | >: <invalid input, Input/output error>
+<ls |>: <invalid input, Input/output error>
+<a < >: <invalid input, Input/output error>
+<a < >: <invalid input, Input/output error>
+<a <>: <invalid input, Input/output error>
+<a < >: <invalid input, Input/output error>
+<ls>: <invalid input, Input/output error>
+<exit>: <invalid input, Input/output error>
+<ls>: <invalid input, Input/output error>
+<l>: <invalid input, Input/output error>
+<ls>: <invalid input, Input/output error>
+<ls>: <invalid input, Input/output error>
+<exit>: <invalid input, Input/output error>
+<ls>: <invalid input, Input/output error>
+<ls&>: <invalid input, Input/output error>
+<grep line < shell.c>: <invalid input, Input/output error>
+<grep c < shell.c>: <invalid input, Input/output error>
+<cat shell.c | grep c>: <invalid input, Input/output error>
+<cat shell.c | grep c>: <invalid input, Input/output error>
+<ls | grep c>: <invalid input, Input/output error>
+<>: <invalid input, Input/output error>
+<grep c < shell.c>: <invalid input, Input/output error>
+<grep c<>: <invalid input, Input/output error>
+<grep c < shell.c | grep l | grep first>: <invalid input, Input/output error>

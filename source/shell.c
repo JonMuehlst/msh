@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <errno.h>
 
 #include "constants.h"
 #include "parse.h"
@@ -36,7 +37,7 @@ int main(int argc, char *argv[]){
   /* install SIGCHLD handler */
   signal(SIGCHLD, sigchld_handler);
   //signal(SIGCHLD, SIG_IGN); // prehaps use this?
-  signal(SIGINT, SIG_IGN);
+  signal(SIGINT, SIG_IGN); // ignore CTRL - C
   
   printf("Press t to test or any other key to continue...\n");
   printf("$ ");
@@ -55,6 +56,13 @@ int main(int argc, char *argv[]){
 	printf("\n");
 	break;
       } 
+      int c = chck_general_error(line);
+      if(c == -1){
+	perror("invalid input");
+	writeToLogFile(line, "invalid input", EIO);
+	printf("\n");
+	continue;
+      }
     } else {
       //strcpy(line ,"kate & ls | grep l\n"); //check mixed commands
       //check_all_errorcheck();
@@ -64,9 +72,6 @@ int main(int argc, char *argv[]){
       //printf("\n");
       break;
       }
-    //fflush(stdin);
-    /* Remove the trailing newline 
-    line[strlen(line) - 1] = '\0'; */
     
     if(strcmp(EXITN,line) == 0){
       break;
@@ -95,7 +100,6 @@ int main(int argc, char *argv[]){
 		//printf("trailing amp\n");
 	      }
 	    }
-	    //if(*next == '\n') delimitFlag = NEWLINE_NUM;
 	    *next = '\0';
 	    input = run(cmd, input, first, 0, &n, delimitFlag);
 	    cmd = next + 1;

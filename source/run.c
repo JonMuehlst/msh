@@ -94,7 +94,13 @@ int pipeCommand(int input, int first, int last){
 			exit(EXIT_FAILURE); // If child fails
 		}
 	} else {
-	  waitpid(pid, &status, WNOHANG );
+	  int w = waitpid(pid, &status, WNOHANG );
+	  if(w == -1){
+	    int errnum = errno;
+	    perror("Child process terminated with errors");
+	    writeToLogFile(lineBCKP, "Child process terminated with errors", errnum);
+	    exit(EXIT_FAILURE);
+	  }
 	}
  
 	if (input != 0) 
@@ -140,7 +146,13 @@ int bgCommand(int input, int first, int output){
 			exit(EXIT_FAILURE); // If child fails
 		}
 	} else {
-	  waitpid(pid, &status, WNOHANG );
+	  int w = waitpid(pid, &status, WNOHANG );
+	  if(w == -1){
+	    int errnum = errno;
+	    perror("Child process terminated with errors");
+	    writeToLogFile(lineBCKP, "Child process terminated with errors", errnum);
+	    exit(EXIT_FAILURE);
+	  }
 	}
 	
 	if (input != 0) 
@@ -182,7 +194,13 @@ int command(int input, int first, int output){
 			exit(EXIT_FAILURE); // If child fails
 		}
 	} else {
-	  waitpid(pid, &status, 0 );
+	  int w = waitpid(pid, &status, 0 );
+	  if(w == -1){
+	    int errnum = errno;
+	    perror("Child process terminated with errors");
+	    writeToLogFile(lineBCKP, "Child process terminated with errors", errnum);
+	    exit(EXIT_FAILURE);
+	  }
 	}
 	
 	if (input != 0) 
@@ -238,6 +256,12 @@ void openFile(){
     fd = fileno(fp);
   } else if(redir_num == INPUT_REDIRECTION_NUM){
     fp = fopen(fileName, "r");
+    if(fp == NULL){
+      int errnum = errno;
+      perror("Error opening file");
+      writeToLogFile(lineBCKP, fileName, errnum);
+      exit(EXIT_FAILURE);
+    }
     fd = fileno(fp);
   } 
 }
