@@ -1,4 +1,4 @@
-/* globals.c */
-#include "globals.h"
+/* global.c */
+#include "global.h"
 
-//extern char lineBCKP[1024];
+char lineBCKP[1024];

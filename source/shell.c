@@ -8,14 +8,12 @@
 #include "parse.h"
 #include "errorcheck.h"
 #include "handler.h"
-//#include "global.h"
+#include "global.h"
 
 /*	Functions
  * 
  * 
  */
-
-extern char lineBCKP[1024];
 
 /* Final cleanup, 'wait' for processes to terminate.
  *  n : Number of times 'command' was invoked.
@@ -73,7 +71,7 @@ int main(int argc, char *argv[]){
     if(strcmp(EXITN,line) == 0){
       break;
     }
-    memcpy ( lineBCKP, line, strlen(line)+1 );
+    strcpy ( lineBCKP, line);
     
     int input = 0;
     int first = 1;

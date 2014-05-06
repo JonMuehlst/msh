@@ -223,8 +223,13 @@
 
   void writeToLogFile(const char* line, const char* str, int errnum){
     
+    char tmp[1024]; 
+    strcpy(tmp, line);
+    char* next = strchr(tmp,'\n');
+    *next = '\0';
+    
     FILE* pFile = fopen("error.log", "a");
-    fprintf(pFile, "<%s>: <%s, %s>\n",line, str, strerror( errnum ));
+    fprintf(pFile, "<%s>: <%s, %s>\n",tmp, str, strerror( errnum ));
     fclose(pFile);
   
   }

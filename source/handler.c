@@ -9,8 +9,6 @@
 #include "errorcheck.h"
 #include "global.h"
 
-extern char lineBCKP[1024];
-
 void sigchld_handler (int sig) {
     assert(sig == SIGCHLD);
     int status;
@@ -20,7 +18,7 @@ void sigchld_handler (int sig) {
     }
 }
 
-
+/*
 int
 main(int argc, char *argv[])
 {
@@ -35,13 +33,13 @@ main(int argc, char *argv[])
 	exit(EXIT_FAILURE);
     }
 
-    if (cpid == 0) {            /* Code executed by child */
+    if (cpid == 0) {            /* Code executed by child *//*
 	printf("Child PID is %ld\n", (long) getpid());
 	if (argc == 1)
-	    pause();                    /* Wait for signals */
+	    pause();                    /* Wait for signals *//*
 	_exit(atoi(argv[1]));
 
-    } else {                    /* Code executed by parent */
+    } else {                    /* Code executed by parent *//*
 	do {
 	    w = waitpid(cpid, &status, WUNTRACED | WCONTINUED);
 	    if (w == -1) {
@@ -62,5 +60,5 @@ main(int argc, char *argv[])
 	exit(EXIT_SUCCESS);
     }
 }
-
+*/
 
