@@ -43,7 +43,6 @@ void check_run()
  *   / >
  */
  
-
 int pipeCommand(int input, int first, int last){
 	int pipettes[2];
 	
@@ -55,37 +54,37 @@ int pipeCommand(int input, int first, int last){
 	  perror("fork");
 	  writeToLogFile(lineBCKP, "fork", errnum);
 	  exit(EXIT_FAILURE);
-	}
-	
-	/*
-	 SCHEME:
-	 	STDIN --> O --> O --> O --> STDOUT
-	*/
- 
-	if (pid == 0) {
+	} else if (pid == 0) {
 		if (first == 1 && last == 0 && input == 0) {
 			// First command
 			dup2( pipettes[PIPE_WRITE], STDOUT_FILENO );
+			close(pipettes[PIPE_WRITE]);
 		} else if (first == 1 && last == 0 && input != 0) {
 			// First command
 			dup2(input, STDIN_FILENO);
 			dup2( pipettes[PIPE_WRITE], STDOUT_FILENO );
+			close(input);
+			close(pipettes[PIPE_WRITE]);
 		} else if (first == 0 && last == 0 && input != 0) {
 			// Middle command with input redirection
 			dup2(input, STDIN_FILENO);
 			dup2(pipettes[PIPE_WRITE], STDOUT_FILENO);
+			close(input);
+			close(pipettes[PIPE_WRITE]);
 		} else if (first == 0 && last == 0 && input == 0) {
 			// Middle command without input redirection
 			//dup2(input, STDIN_FILENO);
 			dup2(pipettes[PIPE_WRITE], STDOUT_FILENO);
+			close(pipettes[PIPE_WRITE]);
 		} 
 		
 		else {
 			// Last command
 			dup2( input, STDIN_FILENO );
+			close(input);
 		}
 		
-		closeFile();
+		//closeFile();
  
 		if (execvp( args[0], args) == -1){
 			int errnum = errno;
@@ -102,7 +101,9 @@ int pipeCommand(int input, int first, int last){
 	    exit(EXIT_FAILURE);
 	  }
 	}
- 
+	
+	closeFile();
+	
 	if (input != 0) 
 		close(input);
  
@@ -126,18 +127,23 @@ int bgCommand(int input, int first, int output){
 	  perror("fork");
 	  writeToLogFile(lineBCKP, "fork", errnum);
 	  exit(EXIT_FAILURE);
-	}
- 
-	if (pid == 0) {
+	} else if (pid == 0) {
 		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
 			// First command with standard IO
 		} else if (input != 0 && output == STANDARD_OUTPUT) {
 			dup2(input, STDIN_FILENO);
+			close(input);
 		} else if (input == 0 && output != STANDARD_OUTPUT) {
 			dup2(output, STDOUT_FILENO);
-		} //if first == 0 && input == 0 && output == 0 then don't redirect...
- 
-		closeFile();
+			close(output);
+		} else if (input != 0 && output != STANDARD_OUTPUT){
+			dup2(input, STDIN_FILENO);
+			dup2(output, STDOUT_FILENO);
+			close(input);
+			close(output);
+		}//if first == 0 && input == 0 && output == 0 then don't redirect...
+		
+		//closeFile();
   
 		if (execvp( args[0], args) == -1){
 			int errnum = errno;
@@ -155,8 +161,13 @@ int bgCommand(int input, int first, int output){
 	  }
 	}
 	
+	closeFile();
+	
 	if (input != 0) 
 		close(input);
+	if (output != 1)
+		close(output);
+ 
  
 	return STANDARD_INPUT;
 }
@@ -170,22 +181,24 @@ int command(int input, int first, int output){
 	  perror("fork");
 	  writeToLogFile(lineBCKP, "fork", errnum);
 	  exit(EXIT_FAILURE);
-	}
- 
-	if (pid == 0) {
+	} else if (pid == 0) {
 		if (first == 1 && input == 0 && output == STANDARD_OUTPUT) {
 			// only command
 		} else if (input != 0 && output == STANDARD_OUTPUT) {
 			// last command
 			dup2(input, STDIN_FILENO);
+			close(input);
 		} else if (input == 0 && output != STANDARD_OUTPUT){
 			dup2(output, STDOUT_FILENO);
+			close(output);
 		} else if (input != 0 && output != STANDARD_OUTPUT){
 			dup2(input, STDIN_FILENO);
 			dup2(output, STDOUT_FILENO);
+			close(input);
+			close(output);
 		}
 		
-		closeFile();
+		//closeFile();
 		
 		if (execvp( args[0], args) == -1){
 			int errnum = errno;
@@ -203,8 +216,12 @@ int command(int input, int first, int output){
 	  }
 	}
 	
+	closeFile();
+	
 	if (input != 0) 
 		close(input);
+	if (output != 1)
+		close(output);
  
 	return STANDARD_INPUT;
 }

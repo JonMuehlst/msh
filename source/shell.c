@@ -4,6 +4,7 @@
 #include <string.h>
 #include <signal.h>
 #include <errno.h>
+#include <string.h>
 
 #include "constants.h"
 #include "parse.h"
@@ -25,11 +26,19 @@ static void cleanup(int n)
 	for (i = 0; i < n; ++i) 
 		wait(NULL); 
 }
+
+void clearString(char *string){
+	int i=0;
+	for(i=0;i<strlen(string);i++)
+	{
+	    string[i] = 0;
+	}
+}
  
 int main(int argc, char *argv[]){
   
-  char line[1024] = "kate & ls | grep l"; // = "ls \n";
-  
+  char line[1024] = "string";
+  char line2[1024] = "string";
   int n = 0; /* number of calls to 'command' */
   int i = 0;
   pid_t pid = 0;
@@ -62,20 +71,25 @@ int main(int argc, char *argv[]){
       
     } else {
       
-	printf("$ ");
-	
-	if(!fgets(line, 1024, stdin)){
-	  printf("\n");
-	  break;
-	} 
-	int c = chck_general_error(line);
-	if(c == -1){
-	  perror("invalid input");
-	  writeToLogFile(line, "invalid input", EIO);
-	  printf("\n");
-	  continue;
+      clearString(line);
+      clearString(line2);
+      fflush(stdin);
+      fflush(stdout);
+      printf("$ ");
+      
+      if(!fgets(line, 1024, stdin)){
+	printf("\n");
+	break;
+      } 
+      strcpy(line2, line);
+      int c = chck_general_error(line2);
+      if(c == -1){
+	perror("invalid input");
+	writeToLogFile(line, "invalid input", EIO);
+	printf("\n");
+	continue;
       }
-    }
+    }	
     
     if(strcmp(EXITN,line) == 0){
       break;
