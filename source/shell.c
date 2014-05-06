@@ -49,7 +49,18 @@ int main(int argc, char *argv[]){
   
   while(1) {
     
-    if(line[0] != 't'){
+    if(line[0] == 't'&& line[1] == '\n'){
+      //strcpy(line ,"kate & ls | grep l\n"); //check mixed commands
+      //check_all_errorcheck();
+      //printf("\n");
+      check_parse();
+      //check_run();
+      //printf("\n");
+      break;
+    
+      }
+    } else {
+      
       printf("$ ");
       
       if(!fgets(line, 1024, stdin)){
@@ -62,16 +73,7 @@ int main(int argc, char *argv[]){
 	writeToLogFile(line, "invalid input", EIO);
 	printf("\n");
 	continue;
-      }
-    } else {
-      //strcpy(line ,"kate & ls | grep l\n"); //check mixed commands
-      //check_all_errorcheck();
-      //printf("\n");
-      check_parse();
-      //check_run();
-      //printf("\n");
-      break;
-      }
+    }
     
     if(strcmp(EXITN,line) == 0){
       break;
