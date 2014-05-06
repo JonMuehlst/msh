@@ -53,26 +53,28 @@ int main(int argc, char *argv[]){
       //strcpy(line ,"kate & ls | grep l\n"); //check mixed commands
       //check_all_errorcheck();
       //printf("\n");
-      check_parse();
+      //check_parse();
       //check_run();
       //printf("\n");
+      printf("No tests chosen in source file\n");
       break;
     
-      }
+      
     } else {
       
-      printf("$ ");
-      
-      if(!fgets(line, 1024, stdin)){
-	printf("\n");
-	break;
-      } 
-      int c = chck_general_error(line);
-      if(c == -1){
-	perror("invalid input");
-	writeToLogFile(line, "invalid input", EIO);
-	printf("\n");
-	continue;
+	printf("$ ");
+	
+	if(!fgets(line, 1024, stdin)){
+	  printf("\n");
+	  break;
+	} 
+	int c = chck_general_error(line);
+	if(c == -1){
+	  perror("invalid input");
+	  writeToLogFile(line, "invalid input", EIO);
+	  printf("\n");
+	  continue;
+      }
     }
     
     if(strcmp(EXITN,line) == 0){
