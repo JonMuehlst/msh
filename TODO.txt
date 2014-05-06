@@ -5,8 +5,8 @@
       error checking
 [x] exit on consecutive delimiters (with or without whitespaces)
 [x] exit if a pipe has no command after it
-[ ] exit if a pipe has no command before it
-[ ] exit if an argument contains delimiters, redir etc and letters e.g >>file.txt (without whitespaces)
+[x] exit if a pipe has no command before it
+[x] exit if an argument contains delimiters, redir etc and letters e.g >>file.txt (without whitespaces)
 [x] exit if an argument contains whitespaces or qoutation marks  
 [x] exit if a command block has more than a single redirection (output (exclusive) or input character)
 [x] exit if a command block ends with one of the following chars: < , > , >>
@@ -29,15 +29,14 @@
 [x] write errors to stderr using perror
 [x] format error messages as: <command>: <error message>
 [x] write to errors.log
-[ ] catch all system call return values and check for errors
-[ ] catch error for waitpid
-[ ] catch error for fopen(filename, "r");
+[x] catch error for waitpid
+[x] catch error for fopen(filename, "r");
 [x] catch error for execvp
 [x] catch error for fork
 
       signal handling
 [x] reap zombies using SIGCHLD
-[ ] do something with exited child's status
+[x] do something with exited child's status
 [x] ignore CTRL - C
 
       exit commands
