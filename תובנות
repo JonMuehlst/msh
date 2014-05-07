@@ -31,4 +31,41 @@ An atomic operation is an operation that will always be executed without any oth
 # David Rodríguez - dribeas @ http://stackoverflow.com/questions/976015/why-do-i-need-to-close-fds-when-reading-and-writing-to-the-pipe
 After performing the fork, all fds (file descriptors) are duplicated. Each process has both ends of the pipe open. If you only want to use one end you should close the other (if your process writes, close the read end).
 
+# close files after calling dup2 @ http://stackoverflow.com/a/11518304
+... Your second problem is that you need to close a plethora of file descriptors, one of which you no longer have a reference for.
+
+So, you might need:
+
+if ((pid = fork()) < 0)
+    ...error...
+else if (pid == 0)
+{
+    /* Be childish */
+    if (in)
+    {
+        int fd0 = open(input, O_RDONLY, 0);
+        dup2(fd0, STDIN_FILENO);
+        close(fd0);
+    }
+
+    if (out)
+    {
+        int fd1 = creat(output, 0644);
+        dup2(fd1, STDOUT_FILENO);
+        close(fd1);
+    }
+    ...now the child has stdin coming from the input file, 
+    ...stdout going to the output file, and no extra files open.
+    ...it is safe to execute the command to be executed.
+    execve(cmd[0], cmd, env);   // Or your preferred alternative
+    fprintf(stderr, "Failed to exec %s\n", cmd[0]);
+    exit(1);
+}
+else
+{
+    /* Be parental */
+    ...wait for child to die, etc...
+}
+Before you do any of this, you should ensure that you've already flushed the shell's standard I/O channels, probably by using fflush(0), so that if the forked child writes to standard error because of a problem, there is no extraneous duplicated output.
+
 # 
