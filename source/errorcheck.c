@@ -207,7 +207,7 @@
 	    srcPtr += 2;
 	    if(*srcPtr == ' '){
 	      skipBlanks(&srcPtr);
-	      break;
+	      continue;
 	    }
 	  }
 	} 

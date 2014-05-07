@@ -78,3 +78,4 @@
 <>: <invalid input, Input/output error>
 <>: <invalid input, Input/output error>
 <grep c < out.txt | grep l > out4.txt & ls -l >: <out.txt, No such file or directory>
+<grep c < shell.c | grep l | grep first >> out.txt & kate & ping google.com > ping_google.com.txt>: <invalid input, Input/output error>
