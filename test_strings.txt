@@ -1,0 +1,5 @@
+						TEST STRINGS
+
+$ grep c < shell.c | grep l | grep first >> out.txt & kate & ping google.com > ping_google.com.txt
+$ grep c < shell.c | grep l | grep first >> out.txt & kate & ls -l > ls.txt & ping google.com >> ping_google.com.txt
+$ 
