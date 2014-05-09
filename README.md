@@ -3,4 +3,4 @@ msh
 
 NO README!!
 
-Just navigate to the directory and type "make"
+Just navigate to the source directory and type "make"
